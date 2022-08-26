@@ -16,3 +16,9 @@ RF06 - O sistema deve armazenar o histórico de respostas;<br />
 RF07 - O Admin deve ser capaz de analisar o desempenho dos usuários;<br />
 RF08 - O usuário deve ser capaz de selecionar quiz e questões;<br />
 RF09 - O Sistema deve ser capaz de avaliar respostas.
+
+## Tecnologias
+- NodeJs;<br />
+- ReactJs;<br />
+- Express;<br />
+- MongoDb;<br />
