@@ -6,6 +6,11 @@
 >
 > Plataforma feita para a matéria de Oficina de Integração 2.
 
+## Membros do grupo
+- Carlos Eduardo Nogueira de Freitas Veiga (cenfv)
+- Hebert Willy
+- Samuel Pereira Porto (SmlPorto)
+
 ## Requisitos Funcionais
 >RF01 - Permitir o cadastro de usuários;<br />
 RF02 - Realizar o controle de permissão de usuários;<br />
