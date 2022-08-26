@@ -23,6 +23,9 @@ RF08 - O Admin deve ser capaz de remover perguntas dos quizzes;<br />
 RF09 - O Usuário deve ser capaz de responder quizzes;<br />
 RF10 - O sistema deve registrar o desempenho do usuário.
 
+## Diagrama
+![Digram](https://user-images.githubusercontent.com/43504710/187005222-78d68e7e-1587-4c5f-a83d-eca9954189ba.png)
+
 ## Tecnologias
 - NodeJs;<br />
 - ReactJs;<br />
