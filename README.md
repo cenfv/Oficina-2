@@ -13,17 +13,22 @@
 
 ## Requisitos Funcionais
 >RF01 - Permitir o cadastro de usuários;<br />
-RF02 - Realizar o controle de permissão de usuários;<br />
-RF03 - O Admin deve ser capaz de criar, editar e remover quizzes;<br />
-RF04 - O Admin deve ser capaz de criar, editar e remover questões;<br />
-RF05 - O sistema deve registrar o desempenho do usuário;<br />
-RF06 - O sistema deve armazenar o histórico de respostas;<br />
-RF07 - O Admin deve ser capaz de analisar o desempenho dos usuários;<br />
-RF08 - O usuário deve ser capaz de selecionar quiz e questões;<br />
-RF09 - O Sistema deve ser capaz de avaliar respostas.
+RF02 - Permitir o login de usuários;<br />
+RF03 - O Admin deve ser capaz de criar perguntas e respostas;
+RF04 - O Sistema deve ser capaz de avaliar respostas.
+RF05 - O Admin deve ser capaz de remover perguntas e respostas;
+RF06 - O Admin deve ser capaz de criar quizzes;
+RF07 - O Admin deve ser capaz de adicionar perguntas aos quizzes;
+RF08 - O Admin deve ser capaz de remover perguntas dos quizzes;
+RF09 - O Usuário deve ser capaz de responder quizzes;
+RF10 - O sistema deve registrar o desempenho do usuário.<br />
 
 ## Tecnologias
 - NodeJs;<br />
 - ReactJs;<br />
 - Express;<br />
 - MongoDb;<br />
+
+##Testes
+- Testing Library;<br />
+- Jest.<br />
