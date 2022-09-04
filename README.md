@@ -33,5 +33,5 @@ RF10 - O sistema deve registrar o desempenho do usuário.
 - MongoDb;<br />
 
 ##Testes
-- Testing Library;<br />
+- Superteste;<br />
 - Jest.<br />
