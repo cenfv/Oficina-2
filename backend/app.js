@@ -8,6 +8,7 @@ var mongodbConnection = require("./src/database/mongodb/mongodb-connection");
 
 var indexRouter = require("./src/routes/index");
 var userRouter = require("./src/routes/user");
+var authRouter = require("./src/routes/auth");
 
 var app = express();
 
@@ -26,6 +27,7 @@ mongodbConnection();
 
 app.use("/", indexRouter);
 app.use("/user", userRouter);
+app.use("/auth", authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
