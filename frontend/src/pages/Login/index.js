@@ -55,7 +55,7 @@ export function Login() {
               Precisando de uma conta?
             </span>
             <Link
-              to=""
+              to="/register"
               className="ml-1 font-bold text-indigo-600 hover:underline"
             >
               Registre-se
