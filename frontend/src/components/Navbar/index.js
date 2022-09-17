@@ -42,7 +42,7 @@ export function Navbar() {
             </button>
             <button>
               <Link
-                to=""
+                to="/register"
                 className="w-full flex  px-4 py-2  rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
               >
                 Inscrever-se
