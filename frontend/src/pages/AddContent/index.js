@@ -1,7 +1,7 @@
 import { Footer } from "../../components/Footer";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import { Navbar } from "../../components/Navbar";
+import { LoggedNavbar } from "../../components/LoggedNavbar";
 
 export function AddContent() {
   const provas = [
@@ -11,7 +11,7 @@ export function AddContent() {
     },
   ];
 
-	const alternativaCorreta = [
+  const alternativaCorreta = [
     {
       label: "alternativa 1",
       id: 0,
@@ -21,7 +21,8 @@ export function AddContent() {
   return (
     <>
       <div className="min-h-screen bg-gray-50">
-        <div className=" bg-white max-w-6xl mx-auto rounded-lg p-10 my-5 shadow-md">
+        <LoggedNavbar />
+        <div className=" bg-white max-w-6xl mx-auto rounded-lg p-10 mt-5 shadow-md">
           <h1 className="mt-3 text-3xl font-bold text-gray-900 sm:text-3xl">
             Adicionar
           </h1>
@@ -90,15 +91,14 @@ export function AddContent() {
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <p className="mt-5">Selecione a alternativa correta:</p>
-									<Autocomplete
-                  className="bg-white rounded-lg drop-shadow-lg mt-3 outline-none focus:outline-none focus:ring w-auto"
-                  disablePortal
-                  options={alternativaCorreta}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Alternativa correta" />
-                  )}
-                />
-
+                  <Autocomplete
+                    className="bg-white rounded-lg drop-shadow-lg mt-3 outline-none focus:outline-none focus:ring w-auto"
+                    disablePortal
+                    options={alternativaCorreta}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Alternativa correta" />
+                    )}
+                  />
                 </div>
                 <div>
                   <p className="mt-5">Selecione a dificuldade:</p>
@@ -137,7 +137,7 @@ export function AddContent() {
         </div>
       </div>
 
-      <div className="left-0 bottom-0 w-full py-5">
+      <div className="left-0 bottom-0 w-full py-5 bg-gray-50">
         <Footer />
       </div>
     </>
