@@ -37,6 +37,54 @@ exports.createUser = async (firstName, lastName, email, password, gender) => {
   }
 };
 
+exports.updateUser = async (id, firstName, lastName, password, gender) => {
+  try {
+    let passwordHash = "";
+    if (password && password.length >= 6) {
+      const salt = await bcrypt.genSalt(10);
+      passwordHash = await bcrypt.hash(password, salt);
+    }
+    const user = await User.findById(id);
+    if (!password) {
+      const res = await user.updateOne({
+        firstName,
+        lastName,
+        gender,
+      });
+      return res;
+    } else {
+      const res = await user.updateOne({
+        firstName,
+        lastName,
+        password: passwordHash,
+        gender,
+      });
+      return res;
+    }
+  } catch (err) {
+    const errors = handleErrors(err);
+    throw errors;
+  }
+};
+
+exports.deleteUser = async (id) => {
+  try {
+    const user = await User.findById(id);
+    const res = await user.deleteOne();
+    return res;
+  } catch (err) {
+    const errors = handleErrors(err);
+    throw errors;
+  }
+};
+
+exports.getAllUsers = async () => {
+  const user = await User.find();
+  if (user) {
+    return user;
+  }
+};
+
 exports.userAuth = async (email, password) => {
   const user = await User.findOne({ email: email });
   const checkPassword = await bcrypt.compare(password, user.password);
@@ -47,12 +95,6 @@ exports.userAuth = async (email, password) => {
 
 exports.getUserById = async (id) => {
   const user = await User.findById(id, "-password");
-  if (user) {
-    return user;
-  }
-};
-exports.getAllUser = async () => {
-  const user = await User.find();
   if (user) {
     return user;
   }
