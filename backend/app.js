@@ -10,6 +10,9 @@ var mongodbConnection = require("./src/database/mongodb/mongodb-connection");
 var indexRouter = require("./src/routes/index");
 var userRouter = require("./src/routes/user");
 var authRouter = require("./src/routes/auth");
+var alternativeRouter = require("./src/routes/questions/alternative");
+var questionRouter = require("./src/routes/questions/question");
+var questionAlternativeRouter = require("./src/routes/questions/questionAlternative");
 
 var app = express();
 
@@ -30,6 +33,9 @@ mongodbConnection();
 app.use("/", indexRouter);
 app.use("/user", userRouter);
 app.use("/auth", authRouter);
+app.use("/alternative", alternativeRouter);
+app.use("/question", questionRouter);
+app.use("/question-alternative", questionAlternativeRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
