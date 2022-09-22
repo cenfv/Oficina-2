@@ -1,15 +1,22 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Axios from "axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { changeUser } from "../../redux/userSlice";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export function Login() {
+  let navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [user, setUser] = useState({
     email: "",
     password: "",
+  });
+
+  const [status, setStatus] = useState({
+    type: "",
+    message: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -29,8 +36,21 @@ export function Login() {
           })
         );
         localStorage.setItem("authorization", `Bearer ${response.data.token}`);
-        return true;
+        setStatus({
+          type: "success",
+          message: "Usuário logado com sucesso!",
+        });
+        setTimeout(() => {
+          navigate("/addcontent");
+        }, 1000);
       }
+    })
+    .catch((err) => {
+      setLoading(false);
+      setStatus({
+        type: "error",
+        message: "Erro ao logar usuário!",
+      });
     });
   };
 
@@ -96,6 +116,23 @@ export function Login() {
               Registre-se
             </Link>
           </div>
+          {status.type === "success" ? (
+              <p className="text-center mt-4 text-green-500">
+                {status.message}
+              </p>
+            ) : (
+              ""
+            )}
+            {status.type === "error" ? (
+              <p className="text-center mt-4 text-red-600">{status.message}</p>
+            ) : (
+              ""
+            )}
+            {loading && (
+              <div className="flex mt-5 justify-center">
+                <AiOutlineLoading3Quarters className="w-12 h-12 animate-spin fill-indigo-500" />
+              </div>
+            )}
         </div>
       </div>
     </div>
