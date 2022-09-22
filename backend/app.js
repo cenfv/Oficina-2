@@ -5,7 +5,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
 
-var mongodbConnection = require("./src/database/mongodb/mongodb-connection");
+var MongoConnection = require("./src/database/mongodb/MongoConnection");
 
 var indexRouter = require("./src/routes/index");
 var userRouter = require("./src/routes/user");
@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 // DB connection
-mongodbConnection();
+process.env.NODE_ENV !== "test" && MongoConnection.connect();
 
 app.use("/", indexRouter);
 app.use("/user", userRouter);
