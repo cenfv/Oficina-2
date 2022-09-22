@@ -31,7 +31,7 @@ export function LoggedNavbar() {
               Seja bem-vindo, {name}
             </span>
             <Link
-              to="/home"
+              to="/"
               onClick={() => {
                 localStorage.removeItem("authorization");
                 dispatch(logout());
