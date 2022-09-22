@@ -30,4 +30,83 @@ describe("Create user", () => {
     });
     expect(response.status).toBe(400);
   });
+
+  it("Password should not be able to have less than 6 characters", async () => {
+    const response = await request(app).post("/user").send({
+      firstName: "Senha",
+      lastName: "Teste senha",
+      email: "senha@gmail.com",
+      password: "12345",
+      gender: "outro",
+    });
+    expect(response.status).toBe(400);
+  });
+
+  it("Should not be able to create a new user with invalid email", async () => {
+    const response = await request(app).post("/user").send({
+      firstName: "Carlos Eduardo",
+      lastName: "Nogueira de Freitas Veiga",
+      email: "carlosnfreitav",
+      password: "werty251",
+      gender: "outro",
+    });
+    expect(response.status).toBe(400);
+  });
+
+  describe("Create user with empty Fields", () => {
+    it("Should not be able to create a new user with empty firstName", async () => {
+      const response = await request(app).post("/user").send({
+        firstName: "",
+        lastName: "Nogueira de Freitas Veiga",
+        email: "nomevazio@email.com",
+        password: "werty2510",
+        gender: "outro",
+      });
+      expect(response.status).toBe(400);
+    });
+
+    it("Should not be able to create a new user with empty lastName", async () => {
+      const response = await request(app).post("/user").send({
+        firstName: "Carlos Eduardo",
+        lastName: "",
+        email: "sobrenomevazio@email.com",
+        password: "werty2510",
+        gender: "outro",
+      });
+      expect(response.status).toBe(400);
+    });
+   
+    it("Should not be able to create a new user with empty email", async () => {
+      const response = await request(app).post("/user").send({
+        firstName: "Carlos Eduardo",
+        lastName: "Nogueira de Freitas Veiga",
+        email: "",
+        password: "werty2510",
+        gender: "outro",
+      });
+      expect(response.status).toBe(400);
+    });
+    
+    it("Should not be able to create a new user with empty password", async () => {
+      const response = await request(app).post("/user").send({
+        firstName: "Carlos Eduardo",
+        lastName: "Nogueira de Freitas Veiga",
+        email: "senhavazia@email.com",
+        password: "",
+        gender: "outro",
+      });
+      expect(response.status).toBe(400);
+    });
+
+    it("Should not be able to create a new user with empty gender", async () => {
+      const response = await request(app).post("/user").send({
+        firstName: "Carlos Eduardo",
+        lastName: "Nogueira de Freitas Veiga",
+        email: "senhavazia@email.com",
+        password: "werty123",
+        gender: "",
+      });
+      expect(response.status).toBe(400);
+    });
+  });
 });
