@@ -20,7 +20,8 @@
     "mongodb": "^4.9.1",
     "mongodb-memory-server": "^8.9.2",
     "mongoose": "^6.6.0",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@types/jest": "^29.0.3",
