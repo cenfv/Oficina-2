@@ -11,9 +11,11 @@ const questionSchema = new mongoose.Schema({
   },
   editionYear: {
     type: Number,
+    required: [true, "Por favor, insira um ano de edição"],
   },
   difficulty: {
     type: Number,
+    required: [true, "Por favor, insira uma dificuldade"],
   },
   imageUrl: {
     type: String,
