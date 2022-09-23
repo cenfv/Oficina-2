@@ -165,6 +165,36 @@ describe("Authorized user operations", () => {
         });
       expect(response.status).toBe(400);
     });
+
+    it("Should not be able to update a user with the Id of another user", async () => {
+      //user creation
+      await request(app).post("/user").send({
+        firstName: "Samuel",
+        lastName: "Porto",
+        email: "samuel@gmail.com",
+        password: "samuel123",
+        gender: "masculino",
+      });
+      //user authentication
+      const userAuthResponse = await request(app).post("/auth").send({
+        email: "samuel@gmail.com",
+        password: "samuel123",
+      });
+
+      const anotherUserId = userAuthResponse.body.user._id;
+
+      const response = await request(app)
+        .put(`/user/${anotherUserId}`)
+        .set("Authorization", `bearer ${userToken}`)
+        .send({
+          firstName: "Carlos Eduardo",
+          lastName: "Veiga",
+          email: "carlosnfreitasv@gmail.com",
+          password: "werty2510",
+          gender: "masculino",
+        });
+      expect(response.status).toBe(404);
+    });
   });
 
   describe("Delete user", () => {
@@ -180,6 +210,19 @@ describe("Authorized user operations", () => {
         .delete(`/user/${userId}`)
         .set("Authorization", `bearer ${userToken}`);
       expect(response.status).toBe(400);
+    });
+
+    it("Should not be able to delete a user with the Id of another user", async () => {
+      const userAuthResponse = await request(app).post("/auth").send({
+        email: "samuel@gmail.com",
+        password: "samuel123",
+      });
+
+      const anotherUserId = userAuthResponse.body.user._id;
+      const response = await request(app)
+        .delete(`/user/${anotherUserId}`)
+        .set("Authorization", `bearer ${userToken}`);
+      expect(response.status).toBe(404);
     });
   });
 });
