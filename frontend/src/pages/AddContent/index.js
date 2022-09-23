@@ -198,7 +198,7 @@ export function AddContent() {
                   onChange={(e) => {
                     setQuestionContent({
                       ...questionContent,
-                      year: e.target.value,
+                      editionYear: e.target.value,
                     });
                   }}
                 ></input>
