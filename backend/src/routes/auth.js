@@ -20,7 +20,7 @@ router.get("/", checkToken.checkTokenBearer, async function (req, res, next) {
 
 router.post("/", async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(email, password);
+
   try {
     const user = await userController.userAuth(email, password);
     const secret = process.env.SECRET;
@@ -46,7 +46,6 @@ router.post("/", async (req, res, next) => {
       },
     });
   } catch (err) {
-    console.log(err);
     return res.status(404).json({
       msg: "User not authenticated",
     });
