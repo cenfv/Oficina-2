@@ -150,6 +150,7 @@ describe("Authorized user operations", () => {
           gender: "Masculino",
         });
       expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty("user");
     });
 
     it("Should not be able to update a user with invalid token", async () => {

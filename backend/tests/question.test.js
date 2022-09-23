@@ -26,7 +26,7 @@ describe("Create question", () => {
   it("Should be able to create a new question", async () => {
     const response = await request(app)
       .post("/question")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `bearer ${token}`)
       .send({
         title: "Questão numero 1",
         description: "questao das bananas",
