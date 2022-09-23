@@ -11,11 +11,10 @@ describe("Create user", () => {
     const response = await request(app).post("/user").send({
       firstName: "Carlos Eduardo",
       lastName: "Nogueira de Freitas Veiga",
-      email: "carlosnfreitav@gmail.com",
+      email: "carlosnfreitasv@gmail.com",
       password: "werty2510",
       gender: "outro",
     });
-    console.log(response.body);
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("user._id");
   });
@@ -24,7 +23,7 @@ describe("Create user", () => {
     const response = await request(app).post("/user").send({
       firstName: "Carlos Eduardo",
       lastName: "Nogueira de Freitas Veiga",
-      email: "carlosnfreitav@gmail.com",
+      email: "carlosnfreitasv@gmail.com",
       password: "werty2510",
       gender: "outro",
     });
@@ -75,7 +74,7 @@ describe("Create user", () => {
       });
       expect(response.status).toBe(400);
     });
-   
+
     it("Should not be able to create a new user with empty email", async () => {
       const response = await request(app).post("/user").send({
         firstName: "Carlos Eduardo",
@@ -86,7 +85,7 @@ describe("Create user", () => {
       });
       expect(response.status).toBe(400);
     });
-    
+
     it("Should not be able to create a new user with empty password", async () => {
       const response = await request(app).post("/user").send({
         firstName: "Carlos Eduardo",
@@ -107,6 +106,123 @@ describe("Create user", () => {
         gender: "",
       });
       expect(response.status).toBe(400);
+    });
+  });
+});
+
+describe("Authorized user operations", () => {
+  let userToken;
+  let userId;
+
+  describe("Auth user", () => {
+    it("Should be able to auth user", async () => {
+      const response = await request(app).post("/auth").send({
+        email: "carlosnfreitasv@gmail.com",
+        password: "werty2510",
+      });
+
+      userToken = response.body.token;
+      userId = response.body.user._id;
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty("token");
+    });
+
+    it("Should not be able to auth user with invalid credentials", async () => {
+      const response = await request(app).post("/auth").send({
+        email: "carlosnfreitasv2",
+        password: "werty2510",
+      });
+      expect(response.status).toBe(404);
+    });
+  });
+
+  describe("Update user", () => {
+    it("Should be able to update a user", async () => {
+      const response = await request(app)
+        .put(`/user/${userId}`)
+        .set("Authorization", `bearer ${userToken}`)
+        .send({
+          firstName: "Carlos Eduardo",
+          lastName: "Veiga",
+          email: "carlosnfreitasv@gmail.com",
+          password: "werty2510",
+          gender: "Masculino",
+        });
+      expect(response.status).toBe(200);
+    });
+
+    it("Should not be able to update a user with invalid token", async () => {
+      const response = await request(app)
+        .put(`/user/${userId}`)
+        .set("Authorization", `bearer ${userToken}123`)
+        .send({
+          firstName: "Carlos Eduardo",
+          lastName: "Veiga",
+          email: "carlosnfreitasv@gmail.com",
+          password: "werty2510",
+          gender: "masculino",
+        });
+      expect(response.status).toBe(400);
+    });
+
+    it("Should not be able to update a user with the Id of another user", async () => {
+      //user creation
+      await request(app).post("/user").send({
+        firstName: "Samuel",
+        lastName: "Porto",
+        email: "samuel@gmail.com",
+        password: "samuel123",
+        gender: "masculino",
+      });
+      //user authentication
+      const userAuthResponse = await request(app).post("/auth").send({
+        email: "samuel@gmail.com",
+        password: "samuel123",
+      });
+
+      const anotherUserId = userAuthResponse.body.user._id;
+
+      const response = await request(app)
+        .put(`/user/${anotherUserId}`)
+        .set("Authorization", `bearer ${userToken}`)
+        .send({
+          firstName: "Carlos Eduardo",
+          lastName: "Veiga",
+          email: "carlosnfreitasv@gmail.com",
+          password: "werty2510",
+          gender: "masculino",
+        });
+      expect(response.status).toBe(404);
+    });
+  });
+
+  describe("Delete user", () => {
+    it("Should be able to delete a user", async () => {
+      const response = await request(app)
+        .delete(`/user/${userId}`)
+        .set("Authorization", `bearer ${userToken}`);
+      expect(response.status).toBe(200);
+    });
+
+    it("Should not be able to delete a user with invalid token", async () => {
+      const response = await request(app)
+        .delete(`/user/${userId}`)
+        .set("Authorization", `bearer ${userToken}`);
+      expect(response.status).toBe(400);
+    });
+
+    it("Should not be able to delete a user with the Id of another user", async () => {
+      const userAuthResponse = await request(app).post("/auth").send({
+        email: "samuel@gmail.com",
+        password: "samuel123",
+      });
+
+      const anotherUserId = userAuthResponse.body.user._id;
+      const response = await request(app)
+        .delete(`/user/${anotherUserId}`)
+        .set("Authorization", `bearer ${userToken}`);
+      expect(response.status).toBe(404);
     });
   });
 });
