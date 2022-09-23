@@ -6,20 +6,36 @@ let token = "";
 
 beforeAll(async () => {
   await MongoMemoryServer.connect();
-  response = await request(app).post("/user").send({
+  await request(app).post("/user").send({
     firstName: "Carlos Eduardo",
     lastName: "Nogueira de Freitas Veiga",
     email: "carlosnfreitasv@gmail.com",
     password: "werty2510",
     gender: "outro",
   });
-
+  const response = await request(app).post("/auth").send({
+    email: "carlosnfreitasv@gmail.com",
+    password: "werty2510",
+  });
   token = response.body.token;
 });
 
 afterAll(async () => await MongoMemoryServer.closeDatabase());
 
 describe("Create question", () => {
+  it("Should be able to create a new question", async () => {
+    const response = await request(app)
+      .post("/question")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        title: "Questão numero 1",
+        description: "questao das bananas",
+        difficulty: 0,
+        editionYear: 2017,
+      });
+    expect(response.status).toBe(201);
+  });
+
   describe("Create question with empty Fields", () => {
     it("Should not be able to create a new question with empty title", async () => {
       const response = await request(app)
@@ -78,7 +94,7 @@ describe("Create question", () => {
     });
   });
 
-  describe("Create question with invalid types", () => {
+  describe("Create question with invalid values", () => {
     it("Should not be able to create a new question with invalid editionYear", async () => {
       const response = await request(app)
         .post("/question")
@@ -86,7 +102,7 @@ describe("Create question", () => {
         .send({
           title: "Criar questao",
           description: "devo criar uma questão",
-          editionYear: "dois mil e vinte e um",
+          editionYear: "a",
           difficulty: 1,
           imageUrl: "",
         });
@@ -102,36 +118,6 @@ describe("Create question", () => {
           description: "devo criar uma questão",
           editionYear: 2021,
           difficulty: "dificuldade",
-          imageUrl: "",
-        });
-      expect(response.status).toBe(400);
-    });
-  });
-
-  describe("Create question with invalid values", () => {
-    it("Should not be able to create a new question with invalid editionYear", async () => {
-      const response = await request(app)
-        .post("/question")
-        .set("Authorization", `bearer ${token}`)
-        .send({
-          title: "Criar questao",
-          description: "devo criar uma questão",
-          editionYear: 0,
-          difficulty: 1,
-          imageUrl: "",
-        });
-      expect(response.status).toBe(400);
-    });
-
-    it("Should not be able to create a new question with invalid difficulty", async () => {
-      const response = await request(app)
-        .post("/question")
-        .set("Authorization", `bearer ${token}`)
-        .send({
-          title: "Criar questao",
-          description: "devo criar uma questão",
-          editionYear: 2021,
-          difficulty: 0,
           imageUrl: "",
         });
       expect(response.status).toBe(400);
