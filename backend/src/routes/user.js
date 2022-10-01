@@ -3,6 +3,8 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const checkToken = require("../helpers/checkToken");
 
+
+
 router.get("/", async (req, res, next) => {
   const targetId = req.params.id;
   try {
@@ -34,6 +36,20 @@ router.post("/", async (req, res, next) => {
   } catch (err) {
     return res.status(400).json({
       validationError: err,
+    });
+  }
+});
+router.get("/:id", checkToken.checkTokenBearer, async (req, res, next) => {
+  const targetId = req.params.id;
+  try {
+    const user = await userController.getUserById(targetId);
+    return res.status(200).json({
+      user,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(404).json({
+      msg: "User not found",
     });
   }
 });
