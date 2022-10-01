@@ -6,6 +6,7 @@ beforeAll(async () => await MongoMemoryServer.connect());
 
 afterAll(async () => await MongoMemoryServer.closeDatabase());
 
+let token = "";
 describe("Create user", () => {
   it("Should be able to create a new user", async () => {
     const response = await request(app).post("/user").send({
@@ -17,6 +18,20 @@ describe("Create user", () => {
     });
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("user._id");
+
+    const authResponse = await request(app).post("/auth").send({
+      email: "carlosnfreitasv@gmail.com",
+      password: "werty2510",
+    });
+    
+    it("Should be able to get the created user", async () => {
+      token = authResponse.body.token;
+      const userResponse = await request(app).get(`/user/${response.body.user._id}`).set("Authorization", `bearer ${token}`);
+      expect(userResponse.status).toBe(200);
+      expect(userResponse.body).toHaveProperty("user");
+    });
+    
+
   });
 
   it("Should not be able to create a new user with same email ", async () => {
