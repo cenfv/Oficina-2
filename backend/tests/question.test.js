@@ -34,6 +34,12 @@ describe("Create question", () => {
         editionYear: 2017,
       });
     expect(response.status).toBe(201);
+
+    let questionId = response.body.question._id;
+    const questionResponse = await request(app).get(`/question/${questionId}`).set("Authorization", `bearer ${token}`);
+    expect(questionResponse.status).toBe(200);
+    expect(questionResponse.body).toHaveProperty("question.title");
+    
   });
 
   describe("Create question with empty Fields", () => {
@@ -43,12 +49,17 @@ describe("Create question", () => {
         .set("Authorization", `bearer ${token}`)
         .send({
           title: "",
-          description: "devo criar uma questão",
+          description: "Questão com titulo vazio",
           editionYear: 2021,
           difficulty: 1,
           imageUrl: "",
         });
       expect(response.status).toBe(400);
+
+      const questionResponse = await request(app).get(`/question`).set("Authorization", `bearer ${token}`);
+      let count = 0;
+      questionResponse.body.questions.forEach((question) => question.description === "Questão com titulo vazio" && count++);
+      expect(count).toBe(0);
     });
 
     it("Should not be able to create a new question with empty description", async () => {
@@ -56,13 +67,18 @@ describe("Create question", () => {
         .post("/question")
         .set("Authorization", `bearer ${token}`)
         .send({
-          title: "Criar questao",
+          title: "Questão com descrição vazia",
           description: "",
           editionYear: 2021,
           difficulty: 1,
           imageUrl: "",
         });
       expect(response.status).toBe(400);
+
+      const questionResponse = await request(app).get(`/question`).set("Authorization", `bearer ${token}`);
+      let count = 0;
+      questionResponse.body.questions.forEach((question) => question.title === "Questão com descrição vazia" && count++);
+      expect(count).toBe(0);
     });
 
     it("Should not be able to create a new question with empty editionYear", async () => {
@@ -70,13 +86,18 @@ describe("Create question", () => {
         .post("/question")
         .set("Authorization", `bearer ${token}`)
         .send({
-          title: "Criar questao",
-          description: "devo criar uma questão",
+          title: "Questão com data de edição vazia",
+          description: "Questão com data de edição vazia",
           editionYear: "",
           difficulty: 1,
           imageUrl: "",
         });
       expect(response.status).toBe(400);
+
+      const questionResponse = await request(app).get(`/question`).set("Authorization", `bearer ${token}`);
+      let count = 0;
+      questionResponse.body.questions.forEach((question) => question.title === "Questão com data de edição vazia" && count++);
+      expect(count).toBe(0);
     });
 
     it("Should not be able to create a new question with empty difficulty", async () => {
@@ -84,13 +105,18 @@ describe("Create question", () => {
         .post("/question")
         .set("Authorization", `bearer ${token}`)
         .send({
-          title: "Criar questao",
-          description: "devo criar uma questão",
+          title: "Questão com dificuldade vazia",
+          description: "Questão com dificuldade vazia",
           editionYear: 2021,
           difficulty: "",
           imageUrl: "",
         });
       expect(response.status).toBe(400);
+
+      const questionResponse = await request(app).get(`/question`).set("Authorization", `bearer ${token}`);
+      let count = 0;
+      questionResponse.body.questions.forEach((question) => question.title === "Questão com dificuldade vazia" && count++);
+      expect(count).toBe(0);
     });
   });
 
@@ -100,13 +126,18 @@ describe("Create question", () => {
         .post("/question")
         .set("Authorization", `bearer ${token}`)
         .send({
-          title: "Criar questao",
-          description: "devo criar uma questão",
+          title: "Questão com data de edição inválido",
+          description: "Questão com data de edição inválido",
           editionYear: "a",
           difficulty: 1,
           imageUrl: "",
         });
       expect(response.status).toBe(400);
+
+      const questionResponse = await request(app).get(`/question`).set("Authorization", `bearer ${token}`);
+      let count = 0;
+      questionResponse.body.questions.forEach((question) => question.title === "Questão com data de edição inválido" && count++);
+      expect(count).toBe(0);
     });
 
     it("Should not be able to create a new question with invalid difficulty", async () => {
@@ -114,13 +145,18 @@ describe("Create question", () => {
         .post("/question")
         .set("Authorization", `bearer ${token}`)
         .send({
-          title: "Criar questao",
-          description: "devo criar uma questão",
+          title: "Questão com dificuldade inválida",
+          description: "Questão com dificuldade inválida",
           editionYear: 2021,
           difficulty: "dificuldade",
           imageUrl: "",
         });
       expect(response.status).toBe(400);
+
+      const questionResponse = await request(app).get(`/question`).set("Authorization", `bearer ${token}`);
+      let count = 0;
+      questionResponse.body.questions.forEach((question) => question.title === "Questão com dificuldade inválida" && count++);
+      expect(count).toBe(0);
     });
   });
 });

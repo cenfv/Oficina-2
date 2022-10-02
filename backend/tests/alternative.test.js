@@ -82,10 +82,10 @@ describe("Create alternatives", () => {
         });
       expect(response.status).toBe(400);
 
-      const alternativeRespons2 = await request(app).get(`/alternative`).set("Authorization", `bearer ${token}`);
+      const alternativeResponse = await request(app).get(`/alternative`).set("Authorization", `bearer ${token}`);
 
       let count = 0;
-      alternativeRespons2.body.alternatives.forEach((alternative) => alternative.description === "Alternativa que não deve ser criada" && count++);
+      alternativeResponse.body.alternatives.forEach((alternative) => alternative.description === "Alternativa que não deve ser criada" && count++);
       expect(count).toBe(0);
     });
   });
