@@ -61,6 +61,15 @@ describe("Create question-alternative", () => {
         correctAlternative: alternativeId.at(0),
       });
     expect(response.status).toBe(201);
+
+    let questionAlternativeId = response.body.questionAlternative._id;
+
+    const questionAlternativeResponse = await request(app).get(`/question-alternative/${questionAlternativeId}`).set("Authorization", `bearer ${token}`);
+
+    expect(questionAlternativeResponse.status).toBe(200);
+    expect(questionAlternativeResponse.body).toHaveProperty("questionAlternative.question");
+    expect(questionAlternativeResponse.body).toHaveProperty("questionAlternative.alternative");
+
   });
 
   describe("Create question-alternative with empty Fields", () => {
@@ -74,6 +83,12 @@ describe("Create question-alternative", () => {
           correctAlternative: alternativeId.at(0),
         });
       expect(response.status).toBe(400);
+
+      const questionAlternativeResponse = await request(app).get(`/question-alternative`).set("Authorization", `bearer ${token}`);
+
+      let count = 0;
+      questionAlternativeResponse.body.questionAlternative.forEach((questionAlternative) => questionAlternative.question === "" && count++);
+      expect(count).toBe(0);
     });
 
     it("Should not be able to create a new question-alternative with empty alternative", async () => {
@@ -86,6 +101,12 @@ describe("Create question-alternative", () => {
           correctAlternative: alternativeId.at(0),
         });
       expect(response.status).toBe(400);
+
+      const questionAlternativeResponse = await request(app).get(`/question-alternative`).set("Authorization", `bearer ${token}`);
+
+      let count = 0;
+      questionAlternativeResponse.body.questionAlternative.forEach((questionAlternative) => questionAlternative.alternative === "" && count++);
+      expect(count).toBe(0);
     });
 
     it("Should not be able to create a new question-alternative with empty correctAlternative", async () => {
@@ -98,6 +119,8 @@ describe("Create question-alternative", () => {
           correctAlternative: "",
         });
       expect(response.status).toBe(400);
+
+      // pensar no teste posteriormente, já que não podemos retornar o valor da alternativa correta
     });
   });
 
@@ -112,6 +135,11 @@ describe("Create question-alternative", () => {
           correctAlternative: alternativeId.at(0),
         });
       expect(response.status).toBe(400);
+
+      const questionAlternativeResponse = await request(app).get(`/question-alternative`).set("Authorization", `bearer ${token}`);
+
+      let count = 0;
+      questionAlternativeResponse.body.questionAlternative.forEach((questionAlternative) => questionAlternative.question === "123" && count++);
     });
 
     it("Should not be able to create a new question-alternative with invalid alternative", async () => {
@@ -124,6 +152,12 @@ describe("Create question-alternative", () => {
           correctAlternative: alternativeId.at(0),
         });
       expect(response.status).toBe(400);
+
+      const questionAlternativeResponse = await request(app).get(`/question-alternative`).set("Authorization", `bearer ${token}`);
+
+      let count = 0;
+      questionAlternativeResponse.body.questionAlternative.forEach((questionAlternative) => questionAlternative.alternative === "123" && count++);
+      
     });
 
     it("Should not be able to create a new question-alternative with invalid correctAlternative", async () => {
@@ -136,6 +170,7 @@ describe("Create question-alternative", () => {
           correctAlternative: "123",
         });
       expect(response.status).toBe(400);
+      // pensar no teste posteriormente, já que não podemos retornar o valor da alternativa correta
     });
   });
 });
