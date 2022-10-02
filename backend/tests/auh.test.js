@@ -22,6 +22,7 @@ describe("User auth", () => {
       password: "werty2510",
     });
     expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("token");
     token = response.body.token;
   });
   it("Should not be authenticate an user with wrong password", async () => {
@@ -30,6 +31,7 @@ describe("User auth", () => {
       password: "teste12345",
     });
     expect(response.status).toBe(404);
+    
   });
 
   describe("Get user with token", () => {

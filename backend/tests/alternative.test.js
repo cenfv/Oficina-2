@@ -32,6 +32,13 @@ describe("Create alternatives", () => {
       });
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("alternative");
+
+    let alternativeId = response.body.alternative.at(0)._id;
+    
+    const alternativeResponse = await request(app).get(`/alternative/${alternativeId}`).set("Authorization", `bearer ${token}`);
+    expect(alternativeResponse.status).toBe(200);
+    expect(alternativeResponse.body).toHaveProperty("alternative.description");
+    
   });
   it("Should be able to create more than one alternative", async () => {
     const response = await request(app)
@@ -47,7 +54,19 @@ describe("Create alternatives", () => {
       });
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("alternative");
+
+    let alternativeId = response.body.alternative.at(0)._id;
+    let alternativeId2 = response.body.alternative.at(1)._id;
+
+    const alternativeResponse = await request(app).get(`/alternative/${alternativeId}`).set("Authorization", `bearer ${token}`);
+    expect(alternativeResponse.status).toBe(200);
+    expect(alternativeResponse.body).toHaveProperty("alternative.description");
+
+    const alternativeResponse2 = await request(app).get(`/alternative/${alternativeId2}`).set("Authorization", `bearer ${token}`);
+    expect(alternativeResponse2.status).toBe(200);
+    expect(alternativeResponse2.body).toHaveProperty("alternative.description");
   });
+
   describe("Create alternatives with empty Fields", () => {
     it("Should not be able to create a new alternative with empty description", async () => {
       const response = await request(app)
@@ -55,13 +74,19 @@ describe("Create alternatives", () => {
         .set("Authorization", `bearer ${token}`)
         .send({
           alternatives: [
-            { description: "Alternativa 1" },
-            { description: "Alternativa 2" },
+            { description: "Alternativa que não deve ser criada" },
+            { description: "Alternativa que não deve ser criada" },
             { description: "" },
-            { description: "Alternativa 4" },
+            { description: "Alternativa que não deve ser criada" },
           ],
         });
       expect(response.status).toBe(400);
+
+      const alternativeRespons2 = await request(app).get(`/alternative`).set("Authorization", `bearer ${token}`);
+
+      let count = 0;
+      alternativeRespons2.body.alternatives.forEach((alternative) => alternative.description === "Alternativa que não deve ser criada" && count++);
+      expect(count).toBe(0);
     });
   });
 });
