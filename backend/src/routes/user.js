@@ -43,8 +43,13 @@ router.get("/:id", checkToken.checkTokenBearer, async (req, res, next) => {
   const targetId = req.params.id;
   try {
     const user = await userController.getUserById(targetId);
-    return res.status(200).json({
-      user,
+    if (user) {
+      return res.status(200).json({
+        user,
+      });
+    }
+    return res.status(404).json({
+      msg: "User not found",
     });
   } catch (err) {
     console.log(err);
