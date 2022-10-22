@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const questionAlternativeController = require("../../controllers/questionAlternativeController");
+const checkToken = require("../../helpers/checkToken");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -53,5 +54,27 @@ router.post("/", async (req, res, next) => {
     });
   }
 });
+
+router.put("/:id", checkToken.checkTokenBearer, async (req, res, next) => {
+    const { question, alternative, correctAlternative } = req.body;
+    try {
+      const questionAlternative = await questionAlternativeController.updateQuestionAlternative(
+        req.params.id,
+        question, 
+        alternative, 
+        correctAlternative
+      );
+      return res.status(200).json({
+        questionAlternative,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        validationError: err,
+      });
+    }
+  }
+);
+
 
 module.exports = router;

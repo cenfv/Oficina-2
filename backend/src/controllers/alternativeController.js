@@ -34,3 +34,13 @@ exports.createAlternative = async (alternative) => {
     throw errors;
   }
 };
+
+exports.updateAlternative = async (id, description) => {
+  try {
+    const alternative = await Alternative.findByIdAndUpdate(id, { description }, { new: true });
+    return alternative;
+  } catch (err) {
+    const errors = handleErrors(err);
+    throw errors;
+  }
+};

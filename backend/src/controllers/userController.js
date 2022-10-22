@@ -37,6 +37,28 @@ exports.createUser = async (firstName, lastName, email, password, gender) => {
   }
 };
 
+exports.getAllUsers = async () => {
+  const user = await User.find();
+  if (user) {
+    return user;
+  }
+};
+
+exports.userAuth = async (email, password) => {
+  const user = await User.findOne({ email: email });
+  const checkPassword = await bcrypt.compare(password, user.password);
+  if (checkPassword) {
+    return user;
+  }
+};
+
+exports.getUserById = async (id) => {
+  const user = await User.findById(id, "-password");
+  if (user) {
+    return user;
+  }
+};
+
 exports.updateUser = async (id, firstName, lastName, password, gender) => {
   try {
     let passwordHash = "";
@@ -78,24 +100,4 @@ exports.deleteUser = async (id) => {
   }
 };
 
-exports.getAllUsers = async () => {
-  const user = await User.find();
-  if (user) {
-    return user;
-  }
-};
 
-exports.userAuth = async (email, password) => {
-  const user = await User.findOne({ email: email });
-  const checkPassword = await bcrypt.compare(password, user.password);
-  if (checkPassword) {
-    return user;
-  }
-};
-
-exports.getUserById = async (id) => {
-  const user = await User.findById(id, "-password");
-  if (user) {
-    return user;
-  }
-};

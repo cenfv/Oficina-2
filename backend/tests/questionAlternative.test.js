@@ -5,7 +5,8 @@ const MongoMemoryServer = require("../src/database/mongodb/MongoMemoryServer");
 let token = "";
 let questionId = "";
 let alternativeId = "";
-
+let alternatives;
+let quiz = "";
 beforeAll(async () => {
   await MongoMemoryServer.connect();
   await request(app).post("/user").send({
@@ -21,6 +22,14 @@ beforeAll(async () => {
   });
   token = response.body.token;
 
+  const createdQuizResponse = await request(app)
+    .post("/quiz")
+    .set("Authorization", `bearer ${token}`)
+    .send({
+      description: "Quiz 1",
+    });
+  quiz = createdQuizResponse.body.quiz._id;
+
   const questionResponse = await request(app)
     .post("/question")
     .set("Authorization", `Bearer ${token}`)
@@ -29,6 +38,7 @@ beforeAll(async () => {
       description: "questao das bananas",
       difficulty: 0,
       editionYear: 2017,
+      quiz: quiz,
     });
   questionId = questionResponse.body.question._id;
 
@@ -43,9 +53,11 @@ beforeAll(async () => {
         { description: "Alternativa 4" },
       ],
     });
+  alternatives = alternativeResponse.body.alternatives;
   alternativeId = alternativeResponse.body.alternative.map(
     (alternative) => alternative._id
   );
+
 });
 
 afterAll(async () => await MongoMemoryServer.closeDatabase());
@@ -157,7 +169,7 @@ describe("Create question-alternative", () => {
 
       let count = 0;
       questionAlternativeResponse.body.questionAlternative.forEach((questionAlternative) => questionAlternative.alternative === "123" && count++);
-      
+
     });
 
     it("Should not be able to create a new question-alternative with invalid correctAlternative", async () => {
@@ -172,5 +184,36 @@ describe("Create question-alternative", () => {
       expect(response.status).toBe(400);
       // pensar no teste posteriormente, já que não podemos retornar o valor da alternativa correta
     });
+  }); 
+});
+
+describe("Update question-alternative", () => {
+  it("Should be able to update a question-alternative", async () => {
+
+    const response = await request(app)
+      .post("/question-alternative")
+      .set("Authorization", `bearer ${token}`)
+      .send({
+        question: questionId,
+        alternative: alternativeId,
+        correctAlternative: alternativeId.at(0),
+      });
+
+    let questionAlternativeId = response.body.questionAlternative._id;
+   
+    
+    const updateResponse = await request(app)
+      .put(`/question-alternative/${questionAlternativeId}`)
+      .set("Authorization", `bearer ${token}`)
+      .send({
+        question: questionId,
+        alternative: alternativeId,
+        correctAlternative: alternativeId.at(1),
+      });
+
+    expect(updateResponse.status).toBe(200);
+    expect(updateResponse.body).toHaveProperty("questionAlternative.question");
+    expect(updateResponse.body).toHaveProperty("questionAlternative.alternative");
+    expect(updateResponse.body.questionAlternative.correctAlternative.at(0)).toBe(alternativeId.at(1));
   });
 });

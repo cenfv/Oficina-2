@@ -50,4 +50,21 @@ router.post("/", checkToken.checkTokenBearer, async (req, res, next) => {
   }
 });
 
+router.put("/:id", checkToken.checkTokenBearer, async (req, res, next) => {
+  try {
+    const { description } = req.body;
+    const alternative = await alternativeController.updateAlternative(req.params.id, description, { new: true });
+    return res.status(200).json({
+      alternative,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({
+      validationError: err,
+    });
+  }
+}
+);
+
+
 module.exports = router;

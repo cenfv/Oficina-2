@@ -34,11 +34,11 @@ describe("Create alternatives", () => {
     expect(response.body).toHaveProperty("alternative");
 
     let alternativeId = response.body.alternative.at(0)._id;
-    
+
     const alternativeResponse = await request(app).get(`/alternative/${alternativeId}`).set("Authorization", `bearer ${token}`);
     expect(alternativeResponse.status).toBe(200);
     expect(alternativeResponse.body).toHaveProperty("alternative.description");
-    
+
   });
   it("Should be able to create more than one alternative", async () => {
     const response = await request(app)
@@ -88,5 +88,30 @@ describe("Create alternatives", () => {
       alternativeResponse.body.alternatives.forEach((alternative) => alternative.description === "Alternativa que não deve ser criada" && count++);
       expect(count).toBe(0);
     });
+  });
+});
+
+describe("Update alternatives", () => {
+  it("Should be able to update a alternative", async () => {
+    const createdAlternative = await request(app)
+      .post("/alternative")
+      .set("Authorization", `bearer ${token}`)
+      .send({
+        alternatives: [{ description: "Alternativa 1" }],
+      });
+
+    let alternativeId = createdAlternative.body.alternative.at(0)._id;
+
+    const response = await request(app)
+      .put(`/alternative/${alternativeId}`)
+      .set("Authorization", `bearer ${token}`)
+      .send({
+        description: "Alternativa atualizada",
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("alternative");
+    expect(response.body.alternative.description).toBe("Alternativa atualizada");
+ 
   });
 });
