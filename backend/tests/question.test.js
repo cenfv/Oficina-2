@@ -3,7 +3,7 @@ const app = require("../app");
 const MongoMemoryServer = require("../src/database/mongodb/MongoMemoryServer");
 
 let token = "";
-
+let quiz = "";
 beforeAll(async () => {
   await MongoMemoryServer.connect();
   await request(app).post("/user").send({
@@ -18,6 +18,14 @@ beforeAll(async () => {
     password: "werty2510",
   });
   token = response.body.token;
+
+  const createdQuizResponse = await request(app)
+    .post("/quiz")
+    .set("Authorization", `bearer ${token}`)
+    .send({
+      description: "Quiz 1",
+    });
+  quiz = createdQuizResponse.body.quiz._id;
 });
 
 afterAll(async () => await MongoMemoryServer.closeDatabase());
@@ -32,6 +40,7 @@ describe("Create question", () => {
         description: "questao das bananas",
         difficulty: 0,
         editionYear: 2017,
+        quiz: quiz,
       });
     expect(response.status).toBe(201);
 
@@ -39,7 +48,7 @@ describe("Create question", () => {
     const questionResponse = await request(app).get(`/question/${questionId}`).set("Authorization", `bearer ${token}`);
     expect(questionResponse.status).toBe(200);
     expect(questionResponse.body).toHaveProperty("question.title");
-    
+
   });
 
   describe("Create question with empty Fields", () => {
@@ -53,6 +62,7 @@ describe("Create question", () => {
           editionYear: 2021,
           difficulty: 1,
           imageUrl: "",
+          quiz: quiz,
         });
       expect(response.status).toBe(400);
 
@@ -72,6 +82,7 @@ describe("Create question", () => {
           editionYear: 2021,
           difficulty: 1,
           imageUrl: "",
+          quiz: quiz,
         });
       expect(response.status).toBe(400);
 
@@ -91,6 +102,7 @@ describe("Create question", () => {
           editionYear: "",
           difficulty: 1,
           imageUrl: "",
+          quiz: quiz,
         });
       expect(response.status).toBe(400);
 
@@ -110,6 +122,7 @@ describe("Create question", () => {
           editionYear: 2021,
           difficulty: "",
           imageUrl: "",
+          quiz: quiz,
         });
       expect(response.status).toBe(400);
 
@@ -118,6 +131,7 @@ describe("Create question", () => {
       questionResponse.body.questions.forEach((question) => question.title === "Questão com dificuldade vazia" && count++);
       expect(count).toBe(0);
     });
+
   });
 
   describe("Create question with invalid values", () => {
@@ -131,6 +145,7 @@ describe("Create question", () => {
           editionYear: "a",
           difficulty: 1,
           imageUrl: "",
+          quiz: quiz,
         });
       expect(response.status).toBe(400);
 
@@ -150,6 +165,7 @@ describe("Create question", () => {
           editionYear: 2021,
           difficulty: "dificuldade",
           imageUrl: "",
+          quiz: quiz,
         });
       expect(response.status).toBe(400);
 
@@ -158,5 +174,32 @@ describe("Create question", () => {
       questionResponse.body.questions.forEach((question) => question.title === "Questão com dificuldade inválida" && count++);
       expect(count).toBe(0);
     });
+  });
+});
+
+describe("Update question", () => {
+  it("Should be able to update a question", async () => {
+    const response = await request(app)
+      .post("/question")
+      .set("Authorization", `bearer ${token}`)
+      .send({
+        title: "Questão numero 1",
+        description: "questao das bananas",
+        difficulty: 0,
+        editionYear: 2017,
+        quiz: quiz,
+      });
+    const createdQuestionResponse = response.body.question._id;
+    const updateResponse = await request(app)
+      .put(`/question/${createdQuestionResponse}`)
+      .set("Authorization", `bearer ${token}`)
+      .send({
+        title: "Questão numero 2",
+        description: "questao das laranjas",
+        difficulty: 0,
+        editionYear: 2017,
+        quiz: quiz,
+      });
+    expect(updateResponse.status).toBe(200);
   });
 });
