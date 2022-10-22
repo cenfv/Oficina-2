@@ -71,6 +71,10 @@ describe("Create Quizzes",()=>{
     }
     );
 
+   
+});
+
+describe("Update Quizzes",()=>{
     it("Should be able to update a quiz", async () => {
         const createdQuizResponse = await request(app)
         .post("/quiz")
@@ -88,6 +92,7 @@ describe("Create Quizzes",()=>{
         });
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("quiz");
+        expect(response.body.quiz.description).toBe("Quiz 2");
     }
     );
 });

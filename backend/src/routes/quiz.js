@@ -32,34 +32,34 @@ router.get("/:id", checkToken.checkTokenBearer, async (req, res, next) => {
   }
 });
 
-router.post("/",checkToken.checkTokenBearer, async (req, res, next) => {
-    const { description } = req.body;
-    try {
-      const quiz = await quizController.createQuiz(description);
-      return res.status(201).json({
-        quiz,
-      });
-    } catch (err) {
-      return res.status(400).json({
-        validationError: err,
-      });
-    }
+router.post("/", checkToken.checkTokenBearer, async (req, res, next) => {
+  const { description } = req.body;
+  try {
+    const quiz = await quizController.createQuiz(description);
+    return res.status(201).json({
+      quiz,
+    });
+  } catch (err) {
+    return res.status(400).json({
+      validationError: err,
+    });
   }
+}
 );
 
 router.put("/:id", checkToken.checkTokenBearer, async (req, res, next) => {
-    try {
-      const { description } = req.body;
-      const quiz = await quizController.updateQuiz(req.params.id, description);
-      return res.status(200).json({
-        quiz,
-      });
-    } catch (err) {
-      return res.status(400).json({
-        validationError: err,
-      });
-    }
+  try {
+    const { description } = req.body;
+    const quiz = await quizController.updateQuiz(req.params.id, description);
+    return res.status(200).json({
+      quiz,
+    });
+  } catch (err) {
+    return res.status(400).json({
+      validationError: err,
+    });
   }
+}
 );
 
 module.exports = router;

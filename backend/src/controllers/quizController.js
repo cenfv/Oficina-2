@@ -39,13 +39,8 @@ exports.getQuizById = async (id) => {
 
 exports.updateQuiz = async (id, description) => {
   try {
-    const quiz = await Quiz.findById(id);
-    if (quiz) {
-      const res = await Quiz.updateOne({
-        description,
-      });
-      return res;
-    }
+    const quiz = await Quiz.findByIdAndUpdate(id, { description }, { new: true });
+    return quiz;
   } catch (err) {
     const errors = handleErrors(err);
     throw errors;
