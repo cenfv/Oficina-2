@@ -37,13 +37,14 @@ router.post(
   checkToken.checkTokenBearer,
 
   async (req, res, next) => {
-    const { title, description, editionYear, difficulty } = req.body;
+    const { title, description, editionYear, difficulty, quiz } = req.body;
     try {
       const question = await questionController.createQuestion(
         title,
         description,
         editionYear,
-        difficulty
+        difficulty,
+        quiz
       );
       return res.status(201).json({
         question,
@@ -55,5 +56,32 @@ router.post(
     }
   }
 );
+
+router.put(
+  "/:id",
+  checkToken.checkTokenBearer,
+
+  async (req, res) => {
+    const { title, description, editionYear, difficulty, quiz } = req.body;
+    try {
+      const question = await questionController.updateQuestion(
+        req.params.id,
+        title,
+        description,
+        editionYear,
+        difficulty,
+        quiz
+      );
+      return res.status(200).json({
+        question,
+      });
+    } catch (err) {
+      return res.status(400).json({
+        validationError: err,
+      });
+    }
+  }
+);
+
 
 module.exports = router;

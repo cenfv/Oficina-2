@@ -1,4 +1,5 @@
 const Question = require("../models/Question");
+const quizController = require("../models/Quiz");
 
 const handleErrors = (err) => {
   let errors = {};
@@ -28,14 +29,17 @@ exports.createQuestion = async (
   title,
   description,
   editionYear,
-  difficulty
+  difficulty,
+  quizId
 ) => {
   try {
+    const quiz = await quizController.findById(quizId);
     const question = new Question({
       title,
       description,
       editionYear,
       difficulty,
+      quiz
     });
     const res = await question.save();
     return res;
@@ -44,3 +48,29 @@ exports.createQuestion = async (
     throw errors;
   }
 };
+
+exports.updateQuestion = async (
+  id,
+  title,
+  description,
+  editionYear,
+  difficulty,
+  quizId
+) => {
+  try {
+    const quiz = await quizController.findById(quizId);
+    const question = await Question.findByIdAndUpdate(id, {
+      title,
+      description,
+      editionYear,
+      difficulty,
+      quiz
+    }, { new: true });
+    return question;
+
+  } catch (err) {
+    const errors = handleErrors(err);
+    throw errors;
+  }
+};
+
