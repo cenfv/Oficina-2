@@ -13,6 +13,7 @@ var authRouter = require("./src/routes/auth");
 var alternativeRouter = require("./src/routes/questions/alternative");
 var questionRouter = require("./src/routes/questions/question");
 var questionAlternativeRouter = require("./src/routes/questions/questionAlternative");
+var quizRouter = require("./src/routes/quiz");
 
 var app = express();
 
@@ -36,6 +37,7 @@ app.use("/auth", authRouter);
 app.use("/alternative", alternativeRouter);
 app.use("/question", questionRouter);
 app.use("/question-alternative", questionAlternativeRouter);
+app.use("/quiz", quizRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
