@@ -217,3 +217,22 @@ describe("Update question-alternative", () => {
     expect(updateResponse.body.questionAlternative.correctAlternative.at(0)).toBe(alternativeId.at(1));
   });
 });
+
+describe("Delete question-alternative", () => {
+  it("Should be able to delete a question-alternative", async () => {
+    const response = await request(app)
+      .post("/question-alternative")
+      .set("Authorization", `bearer ${token}`)
+      .send({
+        question: questionId,
+        alternative: alternativeId,
+        correctAlternative: alternativeId.at(0),
+      });
+
+    let questionAlternativeId = response.body.questionAlternative._id;
+
+    const deleteResponse = await request(app).delete(`/question-alternative/${questionAlternativeId}`).set("Authorization", `bearer ${token}`);
+
+    expect(deleteResponse.status).toBe(200);
+  });
+});

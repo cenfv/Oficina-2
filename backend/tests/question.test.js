@@ -203,3 +203,23 @@ describe("Update question", () => {
     expect(updateResponse.status).toBe(200);
   });
 });
+
+describe("Delete question", () => {
+  it("Should be able to delete a question", async () => {
+    const response = await request(app)
+      .post("/question")
+      .set("Authorization", `bearer ${token}`)
+      .send({
+        title: "Questão numero 1",
+        description: "questao das bananas",
+        difficulty: 0,
+        editionYear: 2017,
+        quiz: quiz,
+      });
+    const createdQuestionResponse = response.body.question._id;
+    const deleteResponse = await request(app)
+      .delete(`/question/${createdQuestionResponse}`)
+      .set("Authorization", `bearer ${token}`);
+    expect(deleteResponse.status).toBe(200);
+  });
+});

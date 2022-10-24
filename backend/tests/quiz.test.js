@@ -96,3 +96,21 @@ describe("Update Quizzes",()=>{
     }
     );
 });
+
+describe("Delete Quizzes",()=>{
+    it("Should be able to delete a quiz", async () => {
+        const createdQuizResponse = await request(app)
+        .post("/quiz")
+        .set("Authorization", `bearer ${token}`)
+        .send({
+            description: "Quiz 1",
+        });
+        const quizId = createdQuizResponse.body.quiz._id;
+
+        const response = await request(app)
+        .delete(`/quiz/${quizId}`)
+        .set("Authorization", `bearer ${token}`);
+        expect(response.status).toBe(200);
+    }
+    );
+});

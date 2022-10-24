@@ -112,6 +112,22 @@ describe("Update alternatives", () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("alternative");
     expect(response.body.alternative.description).toBe("Alternativa atualizada");
- 
+
+  });
+});
+
+describe("Delete alternative", () => {
+  it("Should be able to delete a alternative", async () => {
+    const createdAlternative = await request(app)
+      .post("/alternative")
+      .set("Authorization", `bearer ${token}`)
+      .send({
+        alternatives: [{ description: "Alternativa 1" }],
+      });
+
+    let alternativeId = createdAlternative.body.alternative.at(0)._id;
+
+    const response = await request(app).delete(`/alternative/${alternativeId}`).set("Authorization", `bearer ${token}`);
+    expect(response.status).toBe(200);
   });
 });
