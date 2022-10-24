@@ -82,8 +82,8 @@ exports.updateQuestionAlternative = async (
       correctAlternativeId
     );
 
-    
-    const res = await QuestionAlternative.findByIdAndUpdate(id, {question, alternatives, correctAlternative}, { new: true });
+
+    const res = await QuestionAlternative.findByIdAndUpdate(id, { question, alternatives, correctAlternative }, { new: true });
     return res;
   } catch (err) {
     console.log(err);
@@ -91,3 +91,16 @@ exports.updateQuestionAlternative = async (
     throw errors;
   }
 }
+
+exports.deleteQuestionAlternative = async (id) => {
+  try {
+    const questionAlternative = await QuestionAlternative.findByIdAndDelete(id);
+    if (questionAlternative) {
+      return questionAlternative;
+    }
+  } catch (err) {
+    console.log(err);
+    const errors = handleErrors(err);
+    throw errors;
+  }
+};

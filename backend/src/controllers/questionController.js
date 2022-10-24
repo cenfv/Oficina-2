@@ -74,3 +74,9 @@ exports.updateQuestion = async (
   }
 };
 
+exports.deleteQuestion = async (id) => {
+  const question = await Question.findByIdAndDelete(id);
+  if (question) {
+    return question;
+  }
+};

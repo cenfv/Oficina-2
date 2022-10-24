@@ -76,5 +76,17 @@ router.put("/:id", checkToken.checkTokenBearer, async (req, res, next) => {
   }
 );
 
+router.delete("/:id", checkToken.checkTokenBearer, async (req, res, next) => {
+  try {
+    const questionAlternative = await questionAlternativeController.deleteQuestionAlternative(req.id);
+    return res.status(200).json({
+      msg: "question-alternative deleted successfully",
+    });
+  } catch (err) {
+    return res.status(400).json({
+      validationError: err,
+    });
+  }
+});
 
 module.exports = router;

@@ -44,3 +44,16 @@ exports.updateAlternative = async (id, description) => {
     throw errors;
   }
 };
+
+exports.deleteAlternative = async (id) => {
+  try {
+    const alternative = await Alternative.findByIdAndDelete(id);
+    if (alternative) {
+      return alternative;
+    }
+  } catch (err) {
+    console.log(err);
+    const errors = handleErrors(err);
+    throw errors;
+  }
+};
