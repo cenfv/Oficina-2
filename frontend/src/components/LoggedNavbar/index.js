@@ -19,10 +19,16 @@ export function LoggedNavbar() {
               Home
             </Link>
             <Link
-              to="/addcontent"
+              to="/addquestion"
               className="font-medium text-gray-500 hover:text-indigo-600"
             >
-              Adicionar Questões
+              Questões
+            </Link>
+            <Link
+              to="/addquiz"
+              className="font-medium text-gray-500 hover:text-indigo-600"
+            >
+              Provas
             </Link>
           </div>
 
