@@ -41,7 +41,7 @@ export function Login() {
           message: "Usuário logado com sucesso!",
         });
         setTimeout(() => {
-          navigate("/addcontent");
+          navigate("/addquestion");
         }, 1000);
       }
     })
