@@ -30,6 +30,12 @@ export function LoggedNavbar() {
             >
               Provas
             </Link>
+            <Link
+              to="/edit"
+              className="font-medium text-gray-500 hover:text-indigo-600"
+            >
+              Editar
+            </Link>
           </div>
 
           <div className="flex space-x-10 items-center">
