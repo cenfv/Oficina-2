@@ -3,6 +3,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { LoggedNavbar } from "../../components/LoggedNavbar";
 import { useState } from "react";
+import { useEffect } from "react";
 import Axios from "axios";
 
 export function AddQuestion() {
@@ -12,15 +13,37 @@ export function AddQuestion() {
     difficulty: "",
     year: "",
   });
+
   const [alternatives, setAlternatives] = useState([
     {
       id: 0,
       description: "",
     },
   ]);
+
+  const [quiz, setQuiz] = useState([{}]);
+  const [selectedQuiz, setSelectedQuiz] = useState({});
+
   const [loading, setLoading] = useState(false);
   const [selectedAlternative, setSelectedAlternative] = useState({});
   const [status, setStatus] = useState(false);
+
+  const handleLoadQuiz = async () => {
+    setLoading(true);
+    Axios.get(`${process.env.REACT_APP_API_URL}/quiz`, {
+      headers: {
+        authorization: localStorage.getItem("authorization"),
+      },
+    }).then((response) => {
+      setLoading(false);
+      if (response.status === 200 && response.statusText === "OK") {
+        setQuiz(response.data.quizzes);
+      }
+    });
+  };
+  useEffect(() => {
+    handleLoadQuiz();
+  }, []);
 
   const handleCreateQuestion = async () => {
     setLoading(true);
@@ -31,7 +54,7 @@ export function AddQuestion() {
         title: questionContent.title,
         description: questionContent.description,
         editionYear: questionContent.editionYear,
-        quiz: questionContent._id,
+        quiz: selectedQuiz._id,
         difficulty: questionContent.difficulty,
       },
       {
@@ -181,8 +204,11 @@ export function AddQuestion() {
                 <Autocomplete
                   className="bg-white rounded-lg drop-shadow-lg mt-3 outline-none focus:outline-none focus:ring w-auto"
                   disablePortal
-                  options={null}
-                  disabled
+                  options={quiz}
+                  getOptionLabel={(option) => option.description}
+                  onChange={(event, value) => {
+                    setSelectedQuiz(value);
+                  }}
                   renderInput={(params) => (
                     <TextField {...params} label="Prova" />
                   )}
