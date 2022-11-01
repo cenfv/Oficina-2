@@ -25,6 +25,10 @@ const questionSchema = new mongoose.Schema({
     ref: "Quiz",
     required: true,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+},
 });
 
 
