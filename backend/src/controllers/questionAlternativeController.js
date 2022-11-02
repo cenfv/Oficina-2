@@ -16,7 +16,12 @@ exports.getAllQuestionAlternative = async () => {
   const questionAlternative = await QuestionAlternative.find(
     {},
     "-correctAlternative"
-  ).populate("question");
+  ).populate({
+    path: "question",
+    populate: {
+      path: "quiz",
+    },
+  });
 
   if (questionAlternative) {
     return questionAlternative;
