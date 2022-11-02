@@ -12,7 +12,7 @@ const handleErrors = (err) => {
 };
 
 exports.getAllQuestions = async () => {
-  const question = await Question.find();
+  const question = await Question.find().populate("quiz");
   if (question) {
     return question;
   }
