@@ -68,7 +68,7 @@ router.put("/:id", checkToken.checkTokenBearer, async (req, res, next) => {
 
 router.delete("/:id", checkToken.checkTokenBearer, async (req, res, next) => {
   try {
-    const alternative = await alternativeController.deleteAlternative(req.id);
+    const alternative = await alternativeController.deleteAlternative(req.params.id);
     return res.status(200).json({
       msg: "Alternative deleted successfully",
     });

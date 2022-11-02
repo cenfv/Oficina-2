@@ -94,7 +94,7 @@ router.delete("/:id", checkToken.checkTokenBearer, async (req, res, next) => {
     });
   }
   try {
-    const user = await userController.deleteUser(req.id);
+    const user = await userController.deleteUser(req.params.id);
     return res.status(200).json({
       msg: "User deleted successfully",
     });

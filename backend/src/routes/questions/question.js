@@ -85,7 +85,7 @@ router.put(
 
 router.delete("/:id", checkToken.checkTokenBearer, async (req, res, next) => {
   try {
-    const question = await questionController.deleteQuestion(req.id);
+    const question = await questionController.deleteQuestion(req.params.id);
     return res.status(200).json({
       msg: "Question deleted successfully",
     });
