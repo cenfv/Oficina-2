@@ -100,10 +100,19 @@ exports.updateQuestionAlternative = async (
 
 exports.deleteQuestionAlternative = async (id) => {
   try {
-    const questionAlternative = await QuestionAlternative.findByIdAndDelete(id);
+    const questionAlternative = await QuestionAlternative.findById(id);
     if (questionAlternative) {
+      const questionAlternativeDeleteResponse = await QuestionAlternative.findByIdAndDelete(id);
+      const question = await questionController.deleteQuestion(questionAlternative.question);
+      const alternatives = await Promise.all(
+        questionAlternative.alternative.map(async (alternative) => {
+          const res = alternativeController.deleteAlternative(alternative);
+          return res;
+        })
+      );
       return questionAlternative;
     }
+    return null;
   } catch (err) {
     console.log(err);
     const errors = handleErrors(err);
