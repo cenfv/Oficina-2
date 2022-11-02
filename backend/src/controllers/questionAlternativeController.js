@@ -16,7 +16,8 @@ exports.getAllQuestionAlternative = async () => {
   const questionAlternative = await QuestionAlternative.find(
     {},
     "-correctAlternative"
-  );
+  ).populate("question");
+
   if (questionAlternative) {
     return questionAlternative;
   }
