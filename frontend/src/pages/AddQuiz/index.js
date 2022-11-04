@@ -1,5 +1,7 @@
 import { Footer } from "../../components/Footer";
 import { LoggedNavbar } from "../../components/LoggedNavbar";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Axios from "axios";
 
@@ -10,9 +12,12 @@ export function AddQuiz() {
 
   const [loading, setLoading] = useState(false);
 
+  let navigate = useNavigate();
+
   const [status, setStatus] = useState(false);
 
-  const handleCreateQuiz = async () => {
+  const handleCreateQuiz = async (e) => {
+    e.preventDefault()
     setLoading(true);
     return Axios.post(
       `${process.env.REACT_APP_API_URL}/quiz`,
@@ -28,36 +33,25 @@ export function AddQuiz() {
       .then((response) => {
         setLoading(false);
         if (response.status === 201 && response.statusText === "Created") {
+          setStatus({
+            type: "success",
+            message: "Quiz cadastrado com sucesso!",
+          });
+          setTimeout(() => {
+            navigate("/addquestion");
+          }, 1000);
           return response.data.quiz;
         }
         return null;
       })
       .catch((err) => {
         console.log(err);
-      });
-  };
-
-  const addQuiz = async (e) => {
-    e.preventDefault();
-    let saveDataForm;
-    try {
-      saveDataForm = await handleCreateQuiz();
-    } catch (err) {
-      setLoading(false);
-      if (
-        err.response.status === 400 &&
-        err.response.statusText === "Bad Request"
-      ) {
+        setLoading(false);
         setStatus({
           type: "error",
           message: "Houve um erro ao criar o quiz!",
         });
-      }
-    }
-    setStatus({
-      type: "success",
-      message: "Quiz cadastrado com sucesso!",
-    });
+      });
   };
 
   return (
@@ -76,7 +70,7 @@ export function AddQuiz() {
             <h3 className="mt-5 text-2xl font-bold text-gray-900">
               Criar nova prova:
             </h3>
-            <form onSubmit={addQuiz}>
+            <form onSubmit={handleCreateQuiz}>
               <div className="grid grid-cols-1">
                 <input
                   className="bg-white rounded-lg p-4 drop-shadow-lg mt-3 focus:outline-none focus:ring"
@@ -95,6 +89,23 @@ export function AddQuiz() {
                 </button>
               </div>
             </form>
+            {status.type === "success" ? (
+              <p className="text-center mt-4 text-green-500">
+                {status.message}
+              </p>
+            ) : (
+              ""
+            )}
+            {status.type === "error" ? (
+              <p className="text-center mt-4 text-red-600">{status.message}</p>
+            ) : (
+              ""
+            )}
+            {loading && (
+              <div className="flex mt-5 justify-center">
+                <AiOutlineLoading3Quarters className="w-12 h-12 animate-spin fill-indigo-500" />
+              </div>
+            )}
           </div>
         </div>
       </div>

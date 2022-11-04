@@ -1,6 +1,7 @@
 import { Footer } from "../../components/Footer";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { LoggedNavbar } from "../../components/LoggedNavbar";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -72,6 +73,7 @@ export function AddQuestion() {
       })
       .catch((err) => {
         console.log(err);
+        throw new Error("Houve um erro ao criar a questão!");
       });
   };
 
@@ -97,6 +99,7 @@ export function AddQuestion() {
       })
       .catch((error) => {
         console.log(error);
+        throw new Error("Houve um erro ao criar a alternativa!");
       });
   };
 
@@ -128,6 +131,7 @@ export function AddQuestion() {
       })
       .catch((error) => {
         console.log(error);
+        throw new Error("Houve um erro ao criar a question-alternative!");
       });
   };
 
@@ -143,15 +147,11 @@ export function AddQuestion() {
       );
     } catch (err) {
       setLoading(false);
-      if (
-        err.response.status === 400 &&
-        err.response.statusText === "Bad Request"
-      ) {
-        setStatus({
-          type: "error",
-          message: "Houve um erro ao criar a questão!",
-        });
-      }
+      setStatus({
+        type: "error",
+        message: err.message,
+      });
+      return;
     }
     setStatus({
       type: "success",
@@ -239,6 +239,7 @@ export function AddQuestion() {
                   {alternatives.map((alternative) => {
                     return (
                       <input
+                        key={alternative.id}
                         className="bg-white rounded-lg p-4 drop-shadow-lg mt-3 focus:outline-none focus:ring"
                         placeholder={alternative.description}
                         onChange={(event) => {
@@ -266,16 +267,15 @@ export function AddQuestion() {
                       onClick={() => {
                         setAlternatives([
                           ...alternatives.slice(0, alternatives.length - 1),
-                          ]);
-                        
+                        ]);
                       }}
                     >
                       Remover
                     </button>
                     <button
-                    className="text-green-500"
+                      className="text-green-500"
                       type="button"
-                      onClick={() => {                        
+                      onClick={() => {
                         setAlternatives([
                           ...alternatives,
                           { id: alternatives.length, description: "" },
@@ -354,6 +354,25 @@ export function AddQuestion() {
                   Salvar
                 </button>
               </div>
+              {status.type === "success" ? (
+                <p className="text-center mt-4 text-green-500">
+                  {status.message}
+                </p>
+              ) : (
+                ""
+              )}
+              {status.type === "error" ? (
+                <p className="text-center mt-4 text-red-600">
+                  {status.message}
+                </p>
+              ) : (
+                ""
+              )}
+              {loading && (
+                <div className="flex mt-5 justify-center">
+                  <AiOutlineLoading3Quarters className="w-12 h-12 animate-spin fill-indigo-500" />
+                </div>
+              )}
             </form>
           </div>
         </div>
