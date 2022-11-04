@@ -13,12 +13,6 @@ export function LoggedNavbar() {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-10">
             <Link
-              to="/"
-              className="font-medium text-gray-500 hover:text-indigo-600"
-            >
-              Home
-            </Link>
-            <Link
               to="/addquestion"
               className="font-medium text-gray-500 hover:text-indigo-600"
             >

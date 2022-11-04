@@ -26,7 +26,7 @@ export function DataTable({ data, setData }) {
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200 ">
+          <tbody className="bg-white divide-y divide-gray-200 ">
             {data?.length > 0 &&
               data.map((questionAlternatives, index) => {
                 const formattedDate = new Date(

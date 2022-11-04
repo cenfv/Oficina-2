@@ -9,10 +9,10 @@ export function Home() {
         <Navbar />
         <main className="mt-10 mx-auto max-w-6xl sm:mt-12 md:mt-16 lg:mt-20 xl:mt-28">
           <div className="sm:text-center lg:text-left">
-            <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+            <div className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
               <h1 className="block">Ferramenta para enriquecer</h1>
               <h1 className="block text-indigo-600 xl:inline">seus estudos</h1>
-            </h1>
+            </div>
             <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
               Descubra uma maneira inovadora de organizar e realizar as suas provas. Conheça a nossa plataforma e dê o
               próximo passo para a sua aprovação!

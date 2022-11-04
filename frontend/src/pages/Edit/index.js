@@ -44,7 +44,9 @@ export function Edit() {
           <DataTable data={questionAlternativesData} setData={setQuestionAlternativesData}/>
         </div>
       </div>
-      <Footer />
+      <div className="left-0 bottom-0 w-full py-5 bg-gray-50">
+        <Footer />
+      </div>
     </>
   );
 }
