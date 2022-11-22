@@ -46,20 +46,43 @@ router.post("/:id", checkToken.checkTokenBearer, async (req, res, next) => {
     const questionAlternative = req.params.id;
     const { choice } = req.body;
     try {
-      const submission = await submissionController.createSubmission(
-        req.id,
-        questionAlternative,
-        choice
-      );
-      return res.status(201).json({
-        submission,
-      });
+        const submission = await submissionController.createSubmission(
+            req.id,
+            questionAlternative,
+            choice
+        );
+        return res.status(201).json({
+            submission,
+        });
     } catch (err) {
-      console.log(err);
-      return res.status(400).json({
-        validationError: err,
-      });
+        console.log(err);
+        return res.status(400).json({
+            validationError: err,
+        });
     }
-  });
-  
-  module.exports = router;
+});
+
+
+router.get("/user/:id", checkToken.checkTokenBearer, async (req, res, next) => {
+    const targetId = req.params.id;
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+
+    try {
+        const submission = await submissionController.getSubmissionByUserId(
+            targetId,
+            page,
+            limit
+        );
+        return res.status(200).json({
+            submission,
+        });
+
+    } catch (err) {
+        console.log(err);
+        return res.status(400).json({
+            validationError: err,
+        });
+    }
+});
+module.exports = router;

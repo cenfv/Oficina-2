@@ -1,6 +1,7 @@
 const Submission = require("../models/Submission");
 const Alternative = require("../models/Alternative");
 const QuestionAlternative = require("../models/QuestionAlternative");
+const User = require("../models/User");
 
 const handleErrors = (err) => {
   let errors = {};
@@ -68,3 +69,39 @@ exports.createSubmission = async (userId, questionAlternativeId, choiceId) => {
     throw errors;
   }
 }
+
+exports.getSubmissionByUserId = async (userId, page, pageSize) => {
+  try {
+    const user = await User.findById(userId);
+    if (user) {
+      let submission = await Submission.aggregate([
+        {
+          $match: { user: user._id },
+        },
+        { $sort: { "data._id": 1 } },
+        {
+          $facet: {
+            metadata: [{ $count: "total" }, { $addFields: { page: page } }],
+            data: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+          },
+        },
+      ]);
+
+      submission = await Submission.populate(submission, {
+        path: "data.questionAlternative",
+        model: "QuestionAlternative",
+      });
+
+      submission = await Submission.populate(submission, {
+        path: "data.questionAlternative.question",
+        model: "Question",
+      });
+
+      return submission;
+    }
+    return null;
+
+  } catch (err) {
+    console.log(err);
+  }
+};
