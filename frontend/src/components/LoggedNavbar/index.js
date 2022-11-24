@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUser, logout } from "../../redux/userSlice";
 
 export function LoggedNavbar() {
-
   const { name, isLogged } = useSelector(selectUser);
   const dispatch = useDispatch();
 
@@ -12,6 +11,18 @@ export function LoggedNavbar() {
       <div className="py-9 items-center justify-center max-w-6xl mx-auto ">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-10">
+            <Link
+              to="/dashboard"
+              className="font-medium text-gray-500 hover:text-indigo-600"
+            >
+              Dashboard
+            </Link>
+            <Link
+              to="/search-question"
+              className="font-medium text-gray-500 hover:text-indigo-600"
+            >
+              Iniciar Prova
+            </Link>
             <Link
               to="/addquestion"
               className="font-medium text-gray-500 hover:text-indigo-600"
