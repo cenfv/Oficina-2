@@ -85,4 +85,31 @@ router.get("/user/:id", checkToken.checkTokenBearer, async (req, res, next) => {
         });
     }
 });
+
+router.get(
+    "/user/:id/statistics",
+    checkToken.checkTokenBearer,
+    async (req, res, next) => {
+        const targetId = req.params.id;
+        if (targetId != req.id) {
+            return res.status(404).json({
+                msg: "User not authenticated",
+            });
+        }
+        try {
+            const statistics = await submissionController.getSubmissionStatistics(
+                targetId
+            );
+            return res.status(200).json({
+                statistics,
+            });
+        } catch (err) {
+            console.log(err);
+            return res.status(400).json({
+                validationError: err,
+            });
+        }
+    }
+);
+
 module.exports = router;

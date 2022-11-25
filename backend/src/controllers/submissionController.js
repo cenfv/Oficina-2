@@ -105,3 +105,60 @@ exports.getSubmissionByUserId = async (userId, page, pageSize) => {
     console.log(err);
   }
 };
+
+exports.getSubmissionStatistics = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    const questionsQuantity = await QuestionAlternative.find().count();
+
+    let submissions = await Submission.aggregate([
+      {
+        $match: { user: user._id },
+      },
+    ]);
+    submissions = submissions.length;
+
+    let submissionsGroupedByQuestion = await Submission.aggregate([
+      {
+        $match: { user: user._id },
+      },
+      {
+        $group: {
+          _id: "$questionAlternative",
+          data: { $first: "$$ROOT" },
+        },
+      },
+    ]);
+    submissionsGroupedByQuestion = submissionsGroupedByQuestion.length;
+
+    let correctSubmissions = await Submission.aggregate([
+      {
+        $match: { user: user._id, correctChoice: true },
+      },
+    ]);
+    correctSubmissions = correctSubmissions.length;
+
+
+    let correctSubmissionRate = (correctSubmissions / submissions) * 100;
+    let progressRate = (submissionsGroupedByQuestion / questionsQuantity) * 100;
+    let remainingQuestions = questionsQuantity - submissionsGroupedByQuestion;
+
+    if (!correctSubmissionRate || !progressRate || !submissionsGroupedByQuestion) {
+      return {
+        progressRate: 0,
+        correctSubmissionRate: 0,
+        solvedQuantity: 0,
+        remainingQuestions: questionsQuantity,
+      }
+    }
+    return {
+      progressRate,
+      correctSubmissionRate,
+      solvedQuantity: submissionsGroupedByQuestion,
+      remainingQuestions,
+    };
+
+  } catch (err) {
+    console.log(err);
+  }
+};
