@@ -36,6 +36,29 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
+router.get("/question/:id", async (req, res, next) => {
+  const questionId = req.params.id;
+  try {
+    const questionAlternative =
+      await questionAlternativeController.getQuestionAlternativeByQuestionId(
+        questionId
+      );
+    if (questionAlternative.length === 0) {
+      return res.status(404).json({
+        msg: "Question-Alternative not found",
+      });
+    }
+    return res.status(200).json({
+      questionAlternative,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(404).json({
+      msg: "Question-Alternative not found",
+    });
+  }
+});
+
 router.post("/", async (req, res, next) => {
   const { question, alternative, correctAlternative } = req.body;
   try {
