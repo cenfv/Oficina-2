@@ -8,7 +8,7 @@ import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { SearchQuestion } from "./pages/SearchQuestion";
-import { Questions } from "./pages/Questions";
+import { Question } from "./pages/Question";
 import { Dashboard } from "./pages/Dashboard";
 
 function App() {
@@ -23,7 +23,7 @@ function App() {
         <Route path="/addquiz" element={<AddQuiz />} />
         <Route path="/edit" element={<Edit />} />
         <Route path="/search-question" element={<SearchQuestion />} />
-        <Route path="/questions" element={<Questions />} />
+        <Route path="/question/:id" element={<Question />} />
       </Routes>
     </BrowserRouter>
   );
