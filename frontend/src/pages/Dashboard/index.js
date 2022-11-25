@@ -3,8 +3,42 @@ import { LoggedNavbar } from "../../components/LoggedNavbar";
 import { Historic } from "../../components/Historic";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import { selectUser } from "../../redux/userSlice";
+import { useSelector } from "react-redux";
+import Axios from "axios";
+import { useEffect, useState, Fragment } from "react";
 
 export function Dashboard() {
+  const { name, isLogged, id } = useSelector(selectUser);
+  const [userStatistics, setUserStatistics] = useState({
+    progressRate: 0,
+    correctSubmissionRate: 0,
+    solvedQuantity: 0,
+    remainingQuestions: 0,
+  });
+
+  const handleLoadUserStatistics = async () => {
+    Axios.get(
+      `${process.env.REACT_APP_API_URL}/submission/user/${id}/statistics`,
+      {
+        headers: {
+          authorization: localStorage.getItem("authorization"),
+        },
+      }
+    )
+      .then((response) => {
+        if (response.status === 200 && response.statusText === "OK") {
+          setUserStatistics(response.data.statistics);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    handleLoadUserStatistics();
+  }, []);
   return (
     <>
       <div className="min-h-screen bg-gray-50">
@@ -20,10 +54,10 @@ export function Dashboard() {
                   Progresso
                 </h2>
                 <hr className="border-cyan-300 border-t-2  " />
-                <p className=" mx-3 mt-4 text-2xl font-semibold text-gray-600 font-['Poppins'] ">
-                  100%
+                <p className=" mx-3 mt-4 text-2xl font-semibold text-gray-600  ">
+                  {userStatistics.progressRate?.toFixed(2)}%
                 </p>
-                <p className="mx-3 mb-3 text-base font-light font-['Poppins'] text-gray-500">
+                <p className="mx-3 mb-3 text-base font-light  text-gray-500">
                   das questões foram concluídas
                 </p>
               </div>
@@ -32,10 +66,10 @@ export function Dashboard() {
                   Taxa de acertos
                 </h2>
                 <hr className="border-red-300 border-t-2  " />
-                <p className=" mx-3 mt-4 text-2xl font-semibold text-gray-600 font-['Poppins'] ">
-                  50%
+                <p className=" mx-3 mt-4 text-2xl font-semibold text-gray-600  ">
+                  {userStatistics.correctSubmissionRate?.toFixed(2)}%
                 </p>
-                <p className="mx-3 mb-3 text-base font-light font-['Poppins'] text-gray-500">
+                <p className="mx-3 mb-3 text-base font-light  text-gray-500">
                   das questões são respondidas com êxito
                 </p>
               </div>
@@ -44,10 +78,10 @@ export function Dashboard() {
                   Resolvidos
                 </h2>
                 <hr className="border-blue-300 border-t-2  " />
-                <p className=" mx-3 mt-4 text-2xl font-semibold text-gray-600 font-['Poppins'] ">
-                  30
+                <p className=" mx-3 mt-4 text-2xl font-semibold text-gray-600  ">
+                  {userStatistics?.solvedQuantity}
                 </p>
-                <p className="mx-3 mb-3 text-base font-light font-['Poppins'] text-gray-500">
+                <p className="mx-3 mb-3 text-base font-light  text-gray-500">
                   questões foram concluídas
                 </p>
               </div>
@@ -56,10 +90,10 @@ export function Dashboard() {
                   Restantes
                 </h2>
                 <hr className="border-orange-300 border-t-2  " />
-                <p className=" mx-3 mt-4 text-2xl font-semibold text-gray-600 font-['Poppins'] ">
-                  15
+                <p className=" mx-3 mt-4 text-2xl font-semibold text-gray-600  ">
+                  {userStatistics?.remainingQuestions}
                 </p>
-                <p className="mx-3 mb-3 text-base font-light font-['Poppins'] text-gray-500">
+                <p className="mx-3 mb-3 text-base font-light  text-gray-500">
                   questões restantes
                 </p>
               </div>
