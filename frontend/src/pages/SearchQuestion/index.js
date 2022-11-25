@@ -1,10 +1,62 @@
+import { useState, useEffect } from "react";
 import { LoggedNavbar } from "../../components/LoggedNavbar";
 import { Footer } from "../../components/Footer";
 import Autocomplete from "@mui/material/Autocomplete";
+import { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from "@mui/material/TextField";
 import { BsShuffle } from "react-icons/bs";
+import Axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export function SearchQuestion() {
+  const [quiz, setQuiz] = useState([{}]);
+  const [questions, setQuestions] = useState([{}]);
+  const [selectedQuiz, setSelectedQuiz] = useState([{}]);
+  const [selectedDifficulty, setSelectedDifficulty] = useState(-1);
+  const [selectedQuestion, setSelectedQuestion] = useState({});
+  const difficultyOptions = [
+    { value: 3, label: "Todas" },
+    { value: 0, label: "Fácil" },
+    { value: 1, label: "Média" },
+    { value: 2, label: "Difícil" },
+  ];
+  const navigate = useNavigate();
+  const handleLoadQuiz = async () => {
+    Axios.get(`${process.env.REACT_APP_API_URL}/quiz`, {
+      headers: {
+        authorization: localStorage.getItem("authorization"),
+      },
+    }).then((response) => {
+      if (response.status === 200 && response.statusText === "OK") {
+        setQuiz(response.data.quizzes);
+      }
+    });
+  };
+  const handleLoadQuestions = async () => {
+    Axios.get(
+      `${process.env.REACT_APP_API_URL}/question`,
+      {
+        headers: {
+          authorization: localStorage.getItem("authorization"),
+        },
+      }
+    ).then((response) => {
+      if (response.status === 200 && response.statusText === "OK") {
+        setQuestions(response.data.questions);
+      }
+    });
+  }
+  const handleSubmit = async () => {
+    console.log(questions);
+    navigate(`/question/${selectedQuestion._id}`, {
+      state: { questions },
+    });
+  };
+  useEffect(() => {
+    handleLoadQuiz();
+    handleLoadQuestions();
+  }, []);
+
   return (
     <>
       <div className="min-h-screen bg-gray-50">
@@ -32,6 +84,11 @@ export function SearchQuestion() {
                 <Autocomplete
                   className="bg-white rounded-lg drop-shadow-lg mt-3 outline-none focus:outline-none focus:ring w-auto"
                   disablePortal
+                  options={quiz}
+                  getOptionLabel={(option) => option.description}
+                  onChange={(event, value) => {
+                    return setSelectedQuiz(value);
+                  }}
                   renderInput={(params) => (
                     <TextField {...params} label="Selecione uma prova" />
                   )}
@@ -43,6 +100,11 @@ export function SearchQuestion() {
                 <Autocomplete
                   className="bg-white rounded-lg drop-shadow-lg mt-3 outline-none focus:outline-none focus:ring w-auto"
                   disablePortal
+                  options={difficultyOptions}
+                  getOptionLabel={(option) => option.label}
+                  onChange={(event, value) => {
+                    return setSelectedDifficulty(value.value);
+                  }}
                   renderInput={(params) => (
                     <TextField {...params} label="Selecione a dificuldade" />
                   )}
@@ -52,8 +114,21 @@ export function SearchQuestion() {
             <div className="grid grid-cols-2 gap-5">
               <div className="z-30">
                 <Autocomplete
+                  filterOptions={(options) => {
+                    if (selectedDifficulty === 3) {
+                      return options.filter((option) => option.quiz._id === selectedQuiz._id);
+                    }
+                    return options.filter((option) => option.difficulty === selectedDifficulty && option.quiz._id === selectedQuiz._id);
+                  }}
                   className="bg-white rounded-lg drop-shadow-lg mt-3 outline-none focus:outline-none focus:ring w-auto"
                   disablePortal
+                  options={questions}
+                  getOptionLabel={(option) => {
+                    return option.title
+                  }}
+                  onChange={(event, value) => {
+                    setSelectedQuestion(value);
+                  }}
                   renderInput={(params) => (
                     <TextField {...params} label="Selecione a questão" />
                   )}
@@ -62,7 +137,10 @@ export function SearchQuestion() {
             </div>
             <div className="grid grid-cols-2 gap-5">
               <div className="flex justify-end">
-                <button className="w-36 bg-indigo-500 text-white font-medium rounded-lg py-2 text-center drop-shadow-lg mt-10 hover:bg-indigo-600 mb-5 disabled:opacity-75">
+                <button
+                  disabled={selectedQuestion._id === undefined}
+                  onClick={()=>handleSubmit()}  
+                  className="w-36 bg-indigo-500 text-white font-medium rounded-lg py-2 text-center drop-shadow-lg mt-10 hover:bg-indigo-600 mb-5 disabled:opacity-75">
                   Iniciar
                 </button>
               </div>
