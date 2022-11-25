@@ -20,26 +20,44 @@ export function Historic({ data }) {
               <th className="py-2 px-6 text-sm font-medium tracking-wider center text-white uppercase">
                 DIFICULDADE
               </th>
+              <th className="py-2 px-6 text-sm font-medium tracking-wider center text-white uppercase">
+                VALIDAÇÃO
+              </th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200 ">
-            <tr className="text-center hover:bg-gray-100" key={null}>
-              <td className="py-3 px-6 text-sm font-medium text-gray-900 whitespace-nowrap center">
-                {}
-              </td>
-              <td className="py-3 px-6 text-sm font-medium text-gray-900 whitespace-nowrap center">
-                {}
-              </td>
-              <td className="py-3 px-6 text-sm font-medium text-gray-900 whitespace-nowrap center">
-                {}
-              </td>
-              <td className="py-3 px-6 text-sm font-medium text-gray-900 whitespace-nowrap center">
-                {}
-              </td>
-              <td className="py-3 px-6 text-sm font-medium text-gray-900 whitespace-nowrap center">
-                {}
-              </td>
-            </tr>
+            {data?.length > 0 &&
+              data[0]?.data.map((submission, index) => {
+                const formattedDate = new Date(
+                  submission?.submissionDate
+                ).toLocaleString();
+                return (
+                  <tr
+                    className="text-center hover:bg-gray-100"
+                    key={submission?._id}
+                  >
+                    <td className="py-3 px-6 text-sm font-medium text-gray-900 whitespace-nowrap center">
+                      {submission?.questionAlternative?.question?._id}
+                    </td>
+                    <td className="py-3 px-6 text-sm font-medium text-gray-900 whitespace-nowrap center">
+                      {submission?.questionAlternative?.question.title}
+                    </td>
+                    <td className="py-3 px-6 text-sm font-medium text-gray-900 whitespace-nowrap center">
+                      {formattedDate}
+                    </td>
+                    <td className="py-3 px-6 text-sm font-medium text-gray-900 whitespace-nowrap center">
+                      {submission?.questionAlternative?.question.editionYear}
+                    </td>
+                    <td className="py-3 px-6 text-sm font-medium text-gray-900 whitespace-nowrap center">
+                      {submission?.questionAlternative?.question.difficulty}
+                    </td>
+                    <td className={`py-3 px-6 text-sm font-medium ${submission?.correctChoice ? "text-indigo-500":"text-red-500"} whitespace-nowrap center`}>
+                      {submission?.correctChoice?  ("Correta") : ("Incorreta")}
+                    </td>
+                  </tr>
+                );
+                
+              })}
           </tbody>
         </table>
       </div>

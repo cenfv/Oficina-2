@@ -16,6 +16,8 @@ export function Dashboard() {
     solvedQuantity: 0,
     remainingQuestions: 0,
   });
+  const [page, setPage] = useState(1);
+  const [userSubmissionData, setUserSubmissionData] = useState([]);
 
   const handleLoadUserStatistics = async () => {
     Axios.get(
@@ -36,9 +38,34 @@ export function Dashboard() {
       });
   };
 
+  const handleLoadUserSubmissionsByUserId = async () => {
+
+    Axios.get(
+      `${process.env.REACT_APP_API_URL}/submission/user/${id}?page=${page}&limit=10`,
+      {
+        headers: {
+          authorization: localStorage.getItem("authorization"),
+        },
+      }
+    )
+      .then((response) => {
+        if (response.status === 200 && response.statusText === "OK") {
+          setUserSubmissionData(response.data.submission);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
     handleLoadUserStatistics();
+    handleLoadUserSubmissionsByUserId();
   }, []);
+
+  useEffect(() => {
+    handleLoadUserSubmissionsByUserId();
+  }, [page]);
   return (
     <>
       <div className="min-h-screen bg-gray-50">
@@ -108,12 +135,17 @@ export function Dashboard() {
                   <nav className=" shadow-md flex my-2 items-center ">
                     <ul className="flex h-full w-auto">
                       <li>
-                        <button className="h-full bg-white border border-gray-300 text-gray-500 disabled:opacity-50 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-l-lg  py-2 px-3 ">
+                        <button 
+                         onClick={() => {
+                          setPage(page - 1);
+                        }}
+                        className="h-full bg-white border border-gray-300 text-gray-500 disabled:opacity-50 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-l-lg  py-2 px-3 ">
                           Anterior
                         </button>
                       </li>
                       <li>
-                        <input
+                      <input
+                          value={page}
                           id="page"
                           name="page"
                           className="h-full w-10 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900  focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
@@ -121,7 +153,11 @@ export function Dashboard() {
                         />
                       </li>
                       <li>
-                        <button className="h-full bg-white border border-gray-300 text-gray-500  disabled:opacity-50 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-r-lg  py-2 px-3 ">
+                        <button 
+                         onClick={() => {
+                          setPage(page + 1);
+                        }}
+                        className="h-full bg-white border border-gray-300 text-gray-500  disabled:opacity-50 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-r-lg  py-2 px-3 ">
                           Próxima
                         </button>
                       </li>
@@ -138,7 +174,7 @@ export function Dashboard() {
                   </div>
                 </div>
               </div>
-              <Historic />
+              <Historic data={userSubmissionData}/>
             </div>
           </div>
         </div>
